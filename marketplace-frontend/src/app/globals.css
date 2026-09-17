@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-[#fafaf8] text-gray-900 antialiased font-sans;
+  }
+
+  /* Smooth focus rings using the amber primary */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-primary-500 ring-offset-2;
+  }
+}
+
+@layer components {
+  /* Consistent card shadow style */
+  .card {
+    @apply bg-white border border-gray-200 rounded-2xl;
+  }
+}
