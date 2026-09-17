@@ -56,15 +56,6 @@ export class User {
 
   @Prop({ trim: true })
   phone: string;
-
-  @Prop({ default: false })
-  googleDriveConnected: boolean;
-
-  @Prop({ select: false })
-  googleDriveRefreshToken: string;
-
-  @Prop({ select: false })
-  googleDriveFolderId: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

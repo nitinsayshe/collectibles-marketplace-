@@ -69,38 +69,11 @@ export class UsersService {
     return user;
   }
 
-  async findByIdWithDriveToken(id: string): Promise<UserDocument | null> {
-    return this.userModel
-      .findById(id)
-      .select('+googleDriveRefreshToken +googleDriveFolderId')
-      .exec();
-  }
-
   async findAllCollectors(): Promise<UserDocument[]> {
     return this.userModel
       .find({ isActive: true, isProfilePublic: true })
       .select('-password -emailVerificationToken -passwordResetToken -passwordResetExpires')
       .sort({ createdAt: -1 })
       .exec();
-  }
-
-  async connectGoogleDrive(
-    userId: string,
-    data: { refreshToken: string; folderId: string },
-  ): Promise<void> {
-    await this.userModel.findByIdAndUpdate(userId, {
-      $set: {
-        googleDriveConnected: true,
-        googleDriveRefreshToken: data.refreshToken,
-        googleDriveFolderId: data.folderId,
-      },
-    });
-  }
-
-  async disconnectGoogleDrive(userId: string): Promise<void> {
-    await this.userModel.findByIdAndUpdate(userId, {
-      $set: { googleDriveConnected: false },
-      $unset: { googleDriveRefreshToken: '', googleDriveFolderId: '' },
-    });
   }
 }

@@ -2,8 +2,7 @@
 
 import { useRef, useState } from 'react';
 import Image from 'next/image';
-import { useAuthStore } from '@/store/auth.store';
-import { googleDriveService } from '@/services/google-drive.service';
+import { uploadsService } from '@/services/uploads.service';
 import { Button } from './Button';
 
 interface ImageUploadProps {
@@ -13,22 +12,9 @@ interface ImageUploadProps {
 }
 
 export function ImageUpload({ label, value, onChange }: ImageUploadProps) {
-  const user = useAuthStore((s) => s.user);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
-
-  const connected = !!user?.googleDriveConnected;
-
-  const handleConnect = async () => {
-    setError('');
-    try {
-      const url = await googleDriveService.getConnectUrl();
-      window.location.href = url;
-    } catch {
-      setError('Failed to start Google Drive connection');
-    }
-  };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -36,7 +22,7 @@ export function ImageUpload({ label, value, onChange }: ImageUploadProps) {
     setError('');
     setUploading(true);
     try {
-      const result = await googleDriveService.upload(file, value);
+      const result = await uploadsService.upload(file, value);
       onChange(result.url);
     } catch (err: any) {
       const msg = err.response?.data?.message;
@@ -62,32 +48,23 @@ export function ImageUpload({ label, value, onChange }: ImageUploadProps) {
           </div>
         )}
 
-        {connected ? (
-          <div>
-            <input
-              ref={inputRef}
-              type="file"
-              accept="image/png,image/jpeg,image/webp,image/gif"
-              onChange={handleFileChange}
-              className="hidden"
-            />
-            <Button
-              type="button"
-              variant="secondary"
-              loading={uploading}
-              onClick={() => inputRef.current?.click()}
-            >
-              {uploading ? 'Uploading...' : value ? 'Replace image' : 'Upload image'}
-            </Button>
-          </div>
-        ) : (
-          <div>
-            <Button type="button" variant="secondary" onClick={handleConnect}>
-              Connect Google Drive to upload
-            </Button>
-            <p className="text-xs text-gray-400 mt-1">Images are stored in your own Google Drive</p>
-          </div>
-        )}
+        <div>
+          <input
+            ref={inputRef}
+            type="file"
+            accept="image/png,image/jpeg,image/webp,image/gif"
+            onChange={handleFileChange}
+            className="hidden"
+          />
+          <Button
+            type="button"
+            variant="secondary"
+            loading={uploading}
+            onClick={() => inputRef.current?.click()}
+          >
+            {uploading ? 'Uploading...' : value ? 'Replace image' : 'Upload image'}
+          </Button>
+        </div>
       </div>
 
       {error && <p className="text-xs text-red-600">{error}</p>}

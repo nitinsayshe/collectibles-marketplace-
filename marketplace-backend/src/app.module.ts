@@ -11,7 +11,7 @@ import { ConversationsModule } from './conversations/conversations.module';
 import { ContactRequestsModule } from './contact-requests/contact-requests.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { ChatGatewayModule } from './gateway/chat.gateway.module';
-import { GoogleDriveModule } from './google-drive/google-drive.module';
+import { UploadsModule } from './uploads/uploads.module';
 
 @Module({
   imports: [
@@ -31,7 +31,7 @@ import { GoogleDriveModule } from './google-drive/google-drive.module';
     ContactRequestsModule,
     NotificationsModule,
     ChatGatewayModule,
-    GoogleDriveModule,
+    UploadsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

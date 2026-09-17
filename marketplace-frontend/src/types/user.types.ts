@@ -13,7 +13,6 @@ export interface User {
   whatsapp: string;
   instagram: string;
   phone: string;
-  googleDriveConnected?: boolean;
   createdAt: string;
   updatedAt: string;
 }

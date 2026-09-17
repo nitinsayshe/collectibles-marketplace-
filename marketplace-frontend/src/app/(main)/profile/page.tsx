@@ -2,11 +2,10 @@
 
 import { Suspense, useEffect, useState } from 'react';
 import Image from 'next/image';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth.store';
 import { usersService, UpdateProfilePayload } from '@/services/users.service';
 import { productsService } from '@/services/products.service';
-import { googleDriveService } from '@/services/google-drive.service';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { ImageUpload } from '@/components/ui/ImageUpload';
@@ -47,7 +46,6 @@ export default function ProfilePage() {
 
 function ProfilePageContent() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { user: storeUser, setAuth, token, isAuthenticated } = useAuthStore();
   const [user, setUser] = useState<User | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
@@ -56,7 +54,6 @@ function ProfilePageContent() {
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
-  const [driveBusy, setDriveBusy] = useState(false);
 
   // Profile form state
   const [form, setForm] = useState<UpdateProfilePayload>({
@@ -101,37 +98,6 @@ function ProfilePageContent() {
       });
     }).finally(() => setLoading(false));
   }, []);
-
-  useEffect(() => {
-    const driveParam = searchParams.get('drive');
-    if (driveParam !== 'connected' && driveParam !== 'error') return;
-
-    if (driveParam === 'connected') {
-      usersService.getMyProfile().then((u) => {
-        setUser(u);
-        const currentToken = useAuthStore.getState().token;
-        if (currentToken) setAuth(u, currentToken);
-      });
-    } else {
-      setError('Failed to connect Google Drive. Please try again.');
-    }
-    router.replace('/profile');
-  }, [searchParams]);
-
-  const handleDisconnectDrive = async () => {
-    setDriveBusy(true);
-    setError('');
-    try {
-      await googleDriveService.disconnect();
-      const updated = await usersService.getMyProfile();
-      setUser(updated);
-      if (token) setAuth(updated, token);
-    } catch {
-      setError('Failed to disconnect Google Drive');
-    } finally {
-      setDriveBusy(false);
-    }
-  };
 
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -279,35 +245,6 @@ function ProfilePageContent() {
               value={form.avatarUrl}
               onChange={(url) => setForm({ ...form, avatarUrl: url })}
             />
-
-            <div className="flex items-center justify-between py-3 px-4 bg-gray-50 rounded-xl">
-              <div>
-                <p className="text-sm font-medium text-gray-800">Google Drive</p>
-                <p className="text-xs text-gray-500 mt-0.5">
-                  Uploaded images are stored in your own Drive
-                </p>
-              </div>
-              {user?.googleDriveConnected ? (
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-green-100 text-green-700">
-                    Connected
-                  </span>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    loading={driveBusy}
-                    onClick={handleDisconnectDrive}
-                    className="!px-2.5 !py-1 text-xs"
-                  >
-                    Disconnect
-                  </Button>
-                </div>
-              ) : (
-                <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-gray-100 text-gray-600">
-                  Not connected
-                </span>
-              )}
-            </div>
 
             <div className="flex items-center justify-between py-3 px-4 bg-gray-50 rounded-xl">
               <div>
