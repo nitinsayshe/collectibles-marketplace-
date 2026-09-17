@@ -8,7 +8,7 @@ services:
     rootDir: marketplace-backend
     plan: free
     region: oregon
-    buildCommand: npm ci && npm run build
+    buildCommand: npm ci --include=dev && npm run build
     startCommand: npm run start
     healthCheckPath: /api
     autoDeploy: true
