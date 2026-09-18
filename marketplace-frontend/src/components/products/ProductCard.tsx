@@ -78,7 +78,7 @@ export function ProductCard({ product, onDelete, onToggleHide, onEdit }: Product
 
       {/* Owner action bar */}
       {isOwner && (
-        <div className="flex border-t border-gray-100 divide-x divide-gray-100 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="flex border-t border-gray-100 divide-x divide-gray-100 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
           {onEdit && (
             <button
               onClick={() => onEdit(product._id)}
