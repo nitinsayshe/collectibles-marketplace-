@@ -76,8 +76,8 @@ export default function BrowsePage() {
         ))}
       </div>
 
-      {/* Category pills */}
-      <div className="flex gap-2 mb-6 overflow-x-auto pb-1">
+      {/* Category pills — fade hints there's more to scroll on narrow screens */}
+      <div className="flex gap-2 mb-6 overflow-x-auto pb-1 [mask-image:linear-gradient(to_right,black_92%,transparent_100%)]">
         {CATEGORIES.map((c) => (
           <button
             key={c}
