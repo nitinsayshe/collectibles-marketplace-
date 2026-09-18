@@ -451,5 +451,4 @@ Both `render.yaml` (`autoDeploy: true`) and Vercel (default behavior) redeploy a
 - Mark as Sold product status
 - Search on collectors page
 - Notification UI (bell counter in navbar, backend is ready)
-- Mobile responsive improvements
 - SEO / meta tags per page
